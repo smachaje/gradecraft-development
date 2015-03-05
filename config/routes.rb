@@ -98,6 +98,8 @@ GradeCraft::Application.routes.draw do
     end
   end
 
+  put "grades/:id/async_update", to: "grades#async_update"
+
   resources :metrics do
     put :update_order, on: :collection
   end

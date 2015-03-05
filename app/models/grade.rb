@@ -78,6 +78,7 @@ class Grade < ActiveRecord::Base
     self.status == 'In Progress'
   end
 
+
   # DEPRECATED
   # def self.excluding_auditing_students
   #   joins('INNER JOIN course_memberships ON (grades.student_id = course_memberships.user_id AND grades.course_id = course_memberships.course_id AND course_memberships.auditing = ?)', false)

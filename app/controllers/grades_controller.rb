@@ -35,6 +35,7 @@ class GradesController < ApplicationController
     redirect_to @assignment and return unless current_student.present?
     # @grade = Grade.where(student_id: current_student[:id], assignment_id: @assignment[:id]).first
     @grade = current_student_data.grade_for_assignment(@assignment)
+    @serialized_grade = GradeSerializer.new(@grade).to_json
     @student = @grade.student
     @submission = @student.submission_for_assignment(@assignment)
     @title = "Editing #{current_student.name}'s Grade for #{@assignment.name}"
@@ -64,6 +65,12 @@ class GradesController < ApplicationController
   end
 
   public
+
+  def async_update
+    @grade = Grade.find params[:id]
+    @grade.update_attributes params[:grade].merge(instructor_modified: true) 
+    respond_with @grade
+  end
 
   # To avoid duplicate grades, we don't supply a create method. Update will
   # create a new grade if none exists, and otherwise update the existing grade
