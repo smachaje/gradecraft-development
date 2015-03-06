@@ -1,7 +1,7 @@
 class GradesController < ApplicationController
   respond_to :html, :json
   before_filter :set_assignment, only: [:show, :edit, :update, :destroy, :submit_rubric]
-  before_filter :ensure_staff?, :except => [:self_log, :show, :predict_score]
+  before_filter :ensure_staff?, :except => [:self_log, :show, :predict_score, :async_update]
   before_filter :ensure_student?, only: [:predict_score]
 
   def show
@@ -69,10 +69,23 @@ class GradesController < ApplicationController
   public
 
   def async_update
-    @grade = Grade.find params[:id]
-    @grade.update_attributes params[:grade].merge(instructor_modified: true) 
-    respond_with @grade
+    Grade
+      .where(id: params[:id])
+      .update_all(async_update_params)
+    render nothing: true
   end
+
+  private
+
+  def async_update_params
+    {
+      raw_score: params[:raw_score].gsub(/\D/, ''),
+      feedback: params[:feedback],
+      instructor_modified: true
+    }
+  end
+
+  public
 
   # To avoid duplicate grades, we don't supply a create method. Update will
   # create a new grade if none exists, and otherwise update the existing grade
