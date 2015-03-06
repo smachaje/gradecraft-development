@@ -69,7 +69,9 @@
 //= require uploads
 //= require course_switch
 
-//= requre_tree ./grades
+//= require_tree ./froala
+//= require redactor.min
+//= require_tree ./grades
 
 
 $(function(){ $(document).foundation(); });

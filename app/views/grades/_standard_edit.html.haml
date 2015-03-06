@@ -37,25 +37,7 @@
         .clear
 
       .panel
-        .small-12
-          %h4.uppercase Attachments
-          = f.simple_fields_for :grade_files, @grade.grade_files.new do |gf|
-            = gf.file_field :file, :multiple => true
-          - if @grade.grade_files.exists?
-            %h5.bold Uploaded files
-            %ul.uploaded-files
-              - @grade.grade_files.each do |gf|
-                - next if gf.new_record?
-                %li
-                  - if ! gf.file_processing
-                    = "#{gf.filename}"
-                    %span.has-tip{:title => "Refresh page to confirm upload has completed", :data => {'tooltip' => true}}
-                      = "(upload in progress)"
-                  - else
-                    = link_to gf.filename, gf.url, :target => "_blank"
-                    = link_to "(Remove)", remove_uploads_path({ :model => "GradeFile", :grade_id => @grade.id, :upload_id => gf.id } )
-
-          .clear
+        = render partial: "standard_edit_attachment", locals: {f: f}
 
     .button-bar
       %ul.button-group.radius.right

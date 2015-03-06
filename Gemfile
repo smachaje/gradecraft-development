@@ -59,6 +59,8 @@ gem 'uglifier'
 gem 'whenever'
 gem 'newrelic_rpm'
 gem 'sinatra', '>= 1.3.0', :require => nil
+gem 'wysiwyg-rails'
+
 
 group :development do
   gem 'haml-rails'
