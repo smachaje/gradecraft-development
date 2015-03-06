@@ -33,7 +33,8 @@
         .small-12.columns
           = f.hidden_field :graded_by_id, :value => current_user.id
           = f.label :feedback
-          = f.bootsy_area :feedback, "ng-model" => "grade.feedback", "ng-change" => "grade.change()", value: "{{grade.feedback}}", "ng-blur" => "grade.update()"
+          = f.text_area :feedback, "id" => "edit-grade-feedback", "ng-model" => "grade.feedback", "ng-change" => "grade.change()", value: "{{grade.feedback}}", "ng-blur" => "grade.update()"
+        .clear
 
       .panel
         .small-12
