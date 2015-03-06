@@ -16,11 +16,13 @@
   GradePrototype.prototype = 
     change: ()->
       this.hasChanges = true
+      alert("change!")
 
     update: ()->
+      alert("blur!!")
       if this.hasChanges
         self = this
-        $http.put("/grades/#{self.id}/async_update", self).success(
+        $http.put("/grades/#{self.id}/async_update.json", self).success(
           (data,status)->
             self.resetChanges()
         )
