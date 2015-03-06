@@ -67,5 +67,7 @@
 //= require uploads
 //= require course_switch
 
+//= requre_tree ./grades
+
 
 $(function(){ $(document).foundation(); });
