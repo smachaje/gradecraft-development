@@ -10,6 +10,15 @@
   $scope.metrics = []
   $scope.courseBadges = {}
   $scope.savedMetricCount = 0
+  $scope.existingMetrics = []
+
+  # declare a sortableEle variable for the sortable function
+  sortableEle = undefined
+
+  sortableEle = $("#metric-box").sortable(
+    start: $scope.dragStart
+    update: $scope.dragEnd
+  )
 
   $scope.init = (rubricId, pointTotal, metrics, courseBadges)->
     $scope.rubricId = rubricId
@@ -81,11 +90,6 @@
       )
       $scope.displayMetrics
 
-  $scope.existingMetrics = []
-
-  # declare a sortableEle variable for the sortable function
-  sortableEle = undefined
-
   # action when a sortable drag begins
   $scope.dragStart = (e, ui) ->
     ui.item.data "start", ui.item.index()
@@ -115,10 +119,5 @@
       metrics[value.id] = {order: index} if value.id != null
     )
     metrics
-
-  sortableEle = $("#metric-box").sortable(
-    start: $scope.dragStart
-    update: $scope.dragEnd
-  )
   return
 ]

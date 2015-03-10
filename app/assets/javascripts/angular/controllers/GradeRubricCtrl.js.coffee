@@ -5,9 +5,12 @@
   $scope.rubricGrades = {} # index in hash with metric_id as key
   $scope.gsiGradeStatuses = ["In Progress", "Graded"]
   $scope.professorGradeStatuses = ["In Progress", "Graded", "Released"]
-
+  $scope.existingMetrics = []
   $scope.pointsPossible = 0
   $scope.pointsGiven = 0
+  $scope.tiersSelected = []
+  $scope.allMetricIds = []
+  $scope.selectedTierIds = []
 
   $scope.init = (rubricId, metrics, assignmentId, studentId, rubricGrades, gradeStatus, courseBadges, releaseNecessary)->
     $scope.rubricId = rubricId
@@ -56,7 +59,6 @@
     new MetricPrototype(attrs, $scope)
 
   # count how many tiers have been selected in the UI
-  $scope.tiersSelected = []
   $scope.selectedTiers = ()->
     tiers = []
     angular.forEach($scope.metrics, (metric, index)->
@@ -66,8 +68,6 @@
     $scope.tiersSelected = tiers
     tiers
 
-
-  $scope.selectedTierIds = []
   # count how many tiers have been selected in the UI
   $scope.selectedTierIds = ()->
     tierIds = []
@@ -78,7 +78,6 @@
     $scope.selectedTierIds = tierIds
     tierIds
 
-  $scope.allMetricIds = []
   # ids of all the metrics in the rubric
   $scope.allMetricIds = ()->
     metricIds = []
@@ -212,6 +211,4 @@
       $scope.metrics.push metricObject
       $scope.pointsPossible += metricObject.max_points
     )
-
-  $scope.existingMetrics = []
 ]

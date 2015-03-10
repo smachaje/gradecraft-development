@@ -1,6 +1,7 @@
 GradeCraft::Application.routes.draw do
 
 
+  mount JasmineRails::Engine => '/specs' if defined?(JasmineRails)
   require 'sidekiq/web'
   require 'admin_constraint'
   mount Sidekiq::Web => '/sidekiq', :constraints => AdminConstraint.new

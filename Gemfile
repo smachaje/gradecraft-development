@@ -83,6 +83,10 @@ group :test do
   gem 'pry'
 end
 
+group :test, :development do
+  gem 'jasmine-rails'
+end
+
 group :tasks do
   gem 'rake-hooks'
 end
