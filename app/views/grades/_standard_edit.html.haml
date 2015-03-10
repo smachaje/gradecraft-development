@@ -21,7 +21,7 @@
             = f.select :raw_score, @assignment_score_levels.map { |l| [l.formatted_name,l.value] }, :include_blank => true
           - else
             = f.text_field :raw_score, default: @assignment.point_total, label: "Score", hint: "Total Assignment Points: #{ points @assignment.point_total }", data: {autonumeric: true, "m-dec" => "0"},
-              "ng-model" => "grade.raw_score", "ng-change" => "grade.change()", "value" => "{{grade.raw_score}}", "placeholder" => "Enter raw score for grade", "ng-blur" => "grade.update()"
+              "ng-model" => "grade.raw_score", "ng-change" => "grade.change()", "placeholder" => "Enter raw score for grade", "ng-blur" => "grade.update()"
 
         - if @assignment.release_necessary?
           .small-12.large-4.columns
@@ -33,7 +33,7 @@
         .small-12.columns
           = f.hidden_field :graded_by_id, :value => current_user.id
           = f.label :feedback
-          = f.text_area :feedback, "id" => "edit-grade-feedback", "ng-model" => "grade.feedback", "ng-change" => "grade.change()", value: "{{grade.feedback}}", "ng-blur" => "grade.update()"
+          = f.text_area :feedback, "id" => "edit-grade-feedback", "froala" => "froalaOptions", "ng-model" => "grade.feedback", "ng-change" => "grade.change()", "ng-blur" => "grade.update()"
         .clear
 
       .panel

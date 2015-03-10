@@ -1,7 +1,24 @@
 @gradecraft.controller 'GradeCtrl', ['$scope', 'GradePrototype', '$http', ($scope, GradePrototype, $http) -> 
 
+
   $scope.init = (params)->
     $scope.grade = new GradePrototype(params.grade)
+    gradeId = params.grade.id
+
+    $scope.froalaOptions = {
+      inlineMode: false,
+      minHeight: 100,
+      buttons: [ "bold", "italic", "underline", "strikeThrough", "subscript", "superscript", "fontFamily", "fontSize", "color", "formatBlock", "blockStyle", "inlineStyle", "align", "insertOrderedList", "insertUnorderedList", "outdent", "indent", "selectAll", "createLink", "insertVideo", "table", "undo", "redo", "html", "save", "insertHorizontalRule", "removeFormat" ],
+
+      #Set the save URL.
+      saveURL: '/grades/' + gradeId + '/async_update',
+
+      #HTTP request type.
+      saveRequestType: 'PUT',
+
+      # Additional save params.
+      saveParams: {id: 'my_editor'}
+    }
 
   GradePrototype = (attrs={})->
     # attributes

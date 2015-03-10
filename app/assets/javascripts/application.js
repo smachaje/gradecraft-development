@@ -70,7 +70,7 @@
 //= require course_switch
 
 //= require_tree ./froala
-//= require redactor.min
+//= require_tree ./angular-froala
 //= require_tree ./grades
 
 
