@@ -4,6 +4,9 @@ class GradesController < ApplicationController
   before_filter :ensure_staff?, :except => [:self_log, :show, :predict_score, :async_update]
   before_filter :ensure_student?, only: [:predict_score]
 
+  protect_from_forgery with: :null_session, if: Proc.new { |c| c.request.format == 'application/json' }
+
+
   def show
     @assignment = current_course.assignments.find(params[:assignment_id])
     if @assignment.rubric.present?
@@ -78,8 +81,15 @@ class GradesController < ApplicationController
   private
 
   def async_update_params
+    if params[:save_type] == "feedback"
+      base_async_params
+    else
+      base_async_params.merge(raw_score: params[:raw_score].gsub(/\D/, ''))
+    end
+  end
+
+  def base_async_params
     {
-      raw_score: params[:raw_score].gsub(/\D/, ''),
       feedback: params[:feedback],
       instructor_modified: true
     }

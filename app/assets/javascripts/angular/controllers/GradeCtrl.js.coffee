@@ -17,7 +17,7 @@
       saveRequestType: 'PUT',
 
       # Additional save params.
-      saveParams: {id: 'my_editor'}
+      saveParams: {"save_type": "feedback"}
     }
 
   GradePrototype = (attrs={})->
@@ -36,10 +36,10 @@
       alert("change!")
 
     update: ()->
-      alert("blur!!")
+      alert("update performed!!")
       if this.hasChanges
         self = this
-        $http.put("/grades/#{self.id}/async_update.json", self).success(
+        $http.put("/grades/#{self.id}/async_update", self).success(
           (data,status)->
             self.resetChanges()
         )

@@ -33,7 +33,7 @@
         .small-12.columns
           = f.hidden_field :graded_by_id, :value => current_user.id
           = f.label :feedback
-          = f.text_area :feedback, "id" => "edit-grade-feedback", "froala" => "froalaOptions", "ng-model" => "grade.feedback", "ng-change" => "grade.change()", "ng-blur" => "grade.update()"
+          = f.text_area :feedback, "froala" => "froalaOptions", "ng-model" => "grade.feedback", "ng-change" => "grade.change()", "ng-blur" => "grade.update()"
         .clear
 
       .panel
