@@ -11,10 +11,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150219225846) do
+ActiveRecord::Schema.define(version: 20150312174640) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+  enable_extension "hstore"
 
   create_table "assignment_files", force: true do |t|
     t.string   "filename"
@@ -149,7 +150,6 @@ ActiveRecord::Schema.define(version: 20150219225846) do
     t.boolean  "include_in_to_do",                  default: true
     t.string   "student_logged_button_text"
     t.string   "student_logged_revert_button_text"
-    t.boolean  "use_rubric",                        default: true
     t.boolean  "accepts_attachments",               default: true
     t.boolean  "accepts_text",                      default: true
     t.boolean  "accepts_links",                     default: true
@@ -193,20 +193,6 @@ ActiveRecord::Schema.define(version: 20150219225846) do
     t.boolean  "visible",                 default: true
     t.boolean  "can_earn_multiple_times", default: true
     t.integer  "position"
-  end
-
-  create_table "bootsy_image_galleries", force: true do |t|
-    t.integer  "bootsy_resource_id"
-    t.string   "bootsy_resource_type"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "bootsy_images", force: true do |t|
-    t.string   "image_file"
-    t.integer  "image_gallery_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
   end
 
   create_table "categories", force: true do |t|
@@ -628,6 +614,17 @@ ActiveRecord::Schema.define(version: 20150219225846) do
   add_index "sessions", ["session_id"], name: "index_sessions_on_session_id", unique: true, using: :btree
   add_index "sessions", ["updated_at"], name: "index_sessions_on_updated_at", using: :btree
 
+  create_table "shared_earned_badges", force: true do |t|
+    t.integer  "course_id"
+    t.text     "student_name"
+    t.integer  "user_id"
+    t.string   "icon"
+    t.string   "name"
+    t.integer  "badge_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "student_academic_histories", force: true do |t|
     t.integer "student_id"
     t.string  "major"
@@ -661,24 +658,12 @@ ActiveRecord::Schema.define(version: 20150219225846) do
   end
 
   create_table "submission_files_duplicate", id: false, force: true do |t|
-    t.string  "key",        limit: nil
-    t.string  "format",     limit: nil
+    t.string  "key"
+    t.string  "format"
     t.integer "upload_id"
-    t.string  "full_name",  limit: nil
-    t.string  "last_name",  limit: nil
-    t.string  "first_name", limit: nil
-    t.string  "filename",      null: false
-    t.integer "submission_id", null: false
-    t.text    "filepath"
-  end
-
-  create_table "submission_files_duplicate", id: false, force: true do |t|
-    t.string  "key",        limit: nil
-    t.string  "format",     limit: nil
-    t.integer "upload_id"
-    t.string  "full_name",  limit: nil
-    t.string  "last_name",  limit: nil
-    t.string  "first_name", limit: nil
+    t.string  "full_name"
+    t.string  "last_name"
+    t.string  "first_name"
   end
 
   create_table "submissions", force: true do |t|
