@@ -33,10 +33,8 @@
   GradePrototype.prototype = 
     change: ()->
       this.hasChanges = true
-      alert("change!")
 
     update: ()->
-      alert("update performed!!")
       if this.hasChanges
         self = this
         $http.put("/grades/#{self.id}/async_update", self).success(
@@ -44,7 +42,6 @@
             self.resetChanges()
         )
         .error((err)->
-          alert("update failed!")
         )
 
     params: ()->

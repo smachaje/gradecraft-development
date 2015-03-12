@@ -115,7 +115,7 @@ fcsaNumberModule.directive 'fcsaNumber',
                   val = val.replace options.prepend, ''
                 if options.append?
                   val = val.replace options.append, ''
-                elem.val val.replace /,/g, ''
+                elem.val val.replace /,/g, '' # ATTN: LINE THAT ADDS ON-CLICK COMMA REMOVAL
                 elem[0].select()
 
             if options.preventInvalidInput == true
