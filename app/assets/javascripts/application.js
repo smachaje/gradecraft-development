@@ -71,7 +71,6 @@
 
 //= require_tree ./froala
 //= require_tree ./angular-froala
-//= require_tree ./grades
 
 
 $(function(){ $(document).foundation(); });
