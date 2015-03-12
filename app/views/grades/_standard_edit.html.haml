@@ -21,7 +21,7 @@
             = f.select :raw_score, @assignment_score_levels.map { |l| [l.formatted_name,l.value] }, :include_blank => true
           - else
             = f.text_field :raw_score, default: @assignment.point_total, label: "Score", hint: "Total Assignment Points: #{ points @assignment.point_total }", data: {autonumeric: true, "m-dec" => "0"},
-              "ng-model" => "grade.raw_score", "ng-change" => "grade.change()", "placeholder" => "Enter raw score for grade", "ng-blur" => "grade.update()"
+              "ng-model" => "grade.raw_score | number:0", "ng-change" => "grade.change()", "placeholder" => "Enter raw score for grade", "ng-blur" => "grade.update()"
 
         - if @assignment.release_necessary?
           .small-12.large-4.columns
