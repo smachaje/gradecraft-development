@@ -20,6 +20,11 @@
       saveParams: {"save_type": "feedback"}
     }
 
+  $scope.$on("$locationChangeStart", (event, next, current) ->
+    $scope.grade.unloadUpdate()
+  )
+
+
   GradePrototype = (attrs={})->
     # attributes
     this.id = attrs.id
@@ -43,6 +48,15 @@
         )
         .error((err)->
         )
+
+    unloadUpdate: ()->
+      self = this
+      $http.put("/grades/#{self.id}/async_update", self).success(
+        (data,status)->
+          self.resetChanges()
+      )
+      .error((err)->
+      )
 
     params: ()->
       {

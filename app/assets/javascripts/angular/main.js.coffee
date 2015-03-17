@@ -1,4 +1,4 @@
-@gradecraft = angular.module('gradecraft', ['restangular', 'ui.sortable', 'ng-rails-csrf', 'ngResource', 'ngAnimate', 'froala', 'fcsa-number'])
+@gradecraft = angular.module('gradecraft', ['restangular', 'ui.sortable', 'ng-rails-csrf', 'ngResource', 'ngAnimate', 'froala', 'fcsa-number', 'onbeforeunload'])
 
 @gradecraft.directive "modalDialog", ->
   restrict: "E"
@@ -80,46 +80,3 @@ FLOAT_REGEXP = /^\-?\d+((\.|\,)\d+)?$/
         value
 
     return
-
-
-# @gradecraft.directive "ngMin", ->
-#   restrict: "A"
-#   require: "ngModel"
-#   link: (scope, elem, attr, ctrl) ->
-#     scope.$watch attr.ngMin, ->
-#       ctrl.$setViewValue ctrl.$viewValue
-#       return
-# 
-#     minValidator = (value) ->
-#       min = scope.$eval(attr.ngMin) or 0
-#       if value and value != "" and value < min
-#         ctrl.$setValidity "ngMin", false
-#         'undefined'
-#       else
-#         ctrl.$setValidity "ngMin", true
-#         value
-# 
-#     ctrl.$parsers.push minValidator
-#     ctrl.$formatters.push minValidator
-#     return
-# 
-# @gradecraft.directive "ngMax", ->
-#   restrict: "A"
-#   require: "ngModel"
-#   link: (scope, elem, attr, ctrl) ->
-#     scope.$watch attr.ngMax, ->
-#       ctrl.$setViewValue ctrl.$viewValue
-#       return
-# 
-#     maxValidator = (value) ->
-#       max = scope.$eval(attr.ngMax) or Infinity
-#       if value and value != "" and value > max
-#         ctrl.$setValidity "ngMax", false
-#         'undefined'
-#       else
-#         ctrl.$setValidity "ngMax", true
-#         value
-# 
-#     ctrl.$parsers.push maxValidator
-#     ctrl.$formatters.push maxValidator
-#     return
