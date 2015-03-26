@@ -1,4 +1,4 @@
-@gradecraft.controller 'GradeCtrl', ['$scope', 'GradePrototype', '$http', ($scope, GradePrototype, $http) -> 
+@gradecraft.controller 'GradeCtrl', ['$scope', 'GradePrototype', '$http', 'beforeUnload', ($scope, beforeUnload, GradePrototype, $http) -> 
 
 
   $scope.init = (params)->
@@ -21,9 +21,13 @@
       saveParams: {"save_type": "feedback"}
     }
 
-  $scope.$on("$locationChangeStart", (event, next, current) ->
-    $scope.grade.unloadUpdate()
-  )
+    # Bind a listener on your current $scope and save reference to it.
+    onbeforeunload = $scope.$on('$locationChangeStart', BeforeUnload.init('TOP_MESSAGE', 'BOTTOM_MESSAGE'))
+    # In this controller the user will be prompted to
+    # confirm their choice before they change their location.
+    $scope.submitPage = ()->
+      # If you invoking your reference then your listener becomes null.
+      onbeforeunload()
 
 
   GradePrototype = (attrs={})->
