@@ -2,8 +2,9 @@
 
 
   $scope.init = (params)->
-    $scope.grade = new GradePrototype(params.grade)
-    gradeId = params.grade.id
+    gradeParams = params["grade"]
+    $scope.grade = new GradePrototype(gradeParams)
+    gradeId = gradeParams.id
 
     $scope.froalaOptions = {
       inlineMode: false,
@@ -26,11 +27,11 @@
 
 
   GradePrototype = (attrs={})->
-    # attributes
-    this.id = attrs.id
-    this.status = attrs.status
-    this.raw_score = attrs.raw_score
-    this.feedback = attrs.feedback
+    grade = attrs
+    this.id = grade["id"]
+    this.status = grade["status"]
+    this.raw_score = grade["raw_score"]
+    this.feedback = grade["feedback"]
 
     # manage object state
     this.hasChanges = false

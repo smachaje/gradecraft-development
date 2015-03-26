@@ -35,13 +35,14 @@ class GradesController < ApplicationController
 
   def edit
     session[:return_to] = request.referer
+    @student = current_student
     redirect_to @assignment and return unless current_student.present?
-    # @grade = Grade.where(student_id: current_student[:id], assignment_id: @assignment[:id]).first
-    @grade = current_student_data.grade_for_assignment(@assignment)
+    @grade = Grade.where(student_id: current_student[:id], assignment_id: @assignment[:id]).first
+    # @grade = current_student_data.grade_for_assignment(@assignment)
+    create_student_assignment_grade unless @grade
     @serialized_grade = GradeSerializer.new(@grade).to_json
-    @student = @grade.student
     @submission = @student.submission_for_assignment(@assignment)
-    @title = "Editing #{current_student.name}'s Grade for #{@assignment.name}"
+    @title = "Editing #{@student.name}'s Grade for #{@assignment.name}"
     if @assignment.rubric.present?
       @rubric = @assignment.rubric
       @rubric_grades = serialized_rubric_grades
@@ -52,6 +53,10 @@ class GradesController < ApplicationController
   end
 
   private
+
+  def create_student_assignment_grade
+    @grade = Grade.create student_id: @student[:id], assignment_id: @assignment[:id], assignment_type_id: @assignment[:assignment_type_id]#, raw_score: 0
+  end
 
   def serialized_rubric_grades
     ActiveModel::ArraySerializer.new(fetch_rubric_grades, each_serializer: ExistingRubricGradesSerializer).to_json
