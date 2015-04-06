@@ -1,9 +1,16 @@
-@gradecraft.controller 'GradeCtrl', ['$scope', 'GradePrototype', '$http', '$window', '$rootScope', '$location', ($scope, GradePrototype, $rootScope, $window, $http, $location) -> 
+@gradecraft.controller 'GradeCtrl', ['$scope', 'GradePrototype', '$http', '$window', ($scope, GradePrototype, $window, $http) -> 
 
   $scope.init = (params)->
     gradeParams = params["grade"]
     $scope.grade = new GradePrototype(gradeParams)
     gradeId = gradeParams.id
+
+    $scope.$on('$locationChangeStart', (event)->
+      alert("snakes!")
+    )
+
+    $location.url("http://zop.io")
+
 
     $scope.froalaOptions = {
       inlineMode: false,
@@ -19,11 +26,6 @@
       # Additional save params.
       saveParams: {"save_type": "feedback"}
     }
-
-  $scope.$on('$stateChangeStart', (event)->
-    alert("stuff!!")
-    $scope.grade.update()
-  )
 
   GradePrototype = (attrs={})->
     grade = attrs
@@ -70,3 +72,7 @@
 
 
 ]
+
+@gradecraft.run(($rootScope, $location)->
+  )
+)
