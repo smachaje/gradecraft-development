@@ -20,10 +20,17 @@
       saveParams: {"save_type": "feedback"}
     }
 
-  $scope.$on('$stateChangeStart', (event)->
-    alert("stuff!!")
-    $scope.grade.update()
-  )
+  window.onbeforeunload = (event, newUrl, oldUrl) ->
+    #Check if there was any change, if no changes, then simply let the user leave
+    if !$scope.grade.hasChanges
+      return
+    # if $scope.grade.hasChanges
+    message = 'You have unsaved changes that will be saved when you navigate away.'
+    if typeof event == 'undefined'
+      event = window.event
+    if event
+      event.returnValue = message
+    message
 
   GradePrototype = (attrs={})->
     grade = attrs
