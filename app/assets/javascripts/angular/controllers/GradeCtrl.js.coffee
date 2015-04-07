@@ -1,4 +1,4 @@
-@gradecraft.controller 'GradeCtrl', ['$rootScope', '$scope', 'GradePrototype', '$http', 'angular-beforeunload', ($rootScope, $scope, GradePrototype, $http) -> 
+@gradecraft.controller 'GradeCtrl', ['$rootScope', '$scope', 'GradePrototype', '$window', '$http', ($rootScope, $scope, GradePrototype, $window, $http) -> 
 
   $scope.init = (params)->
     gradeParams = params["grade"]
@@ -20,21 +20,6 @@
       saveParams: {"save_type": "feedback"}
     }
 
-  window.onbeforeunload = (event, newUrl, oldUrl) ->
-    alert("snakes")
-    event.preventDefault()
-    
-    # #Check if there was any change, if no changes, then simply let the user leave
-    # if !$scope.grade.hasChanges
-    #   return
-    # # if $scope.grade.hasChanges
-    # message = 'You have unsaved changes that will be saved when you navigate away.'
-    # if typeof event == 'undefined'
-    #   event = window.event
-    # if event
-    #   event.returnValue = message
-    # message
-
   GradePrototype = (attrs={})->
     grade = attrs
     this.id = grade["id"]
@@ -44,19 +29,12 @@
 
     # manage object state
     this.hasChanges = false
-    this.locationHandler = null
 
   GradePrototype.prototype = 
     change: ()->
       this.addLocationHandler() unless this.hasChanges
       this.hasChanges = true
 
-    addLocationHandler: ()->
-    #   $scope.$on('$locationChangeStart', (event, next, current)->
-    #     if(!confirm("Are you sure you want to leave this page?"))
-    #       event.preventDefault()
-    #   )
-      
     update: ()->
       if this.hasChanges
         self = this

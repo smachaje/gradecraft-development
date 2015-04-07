@@ -10,7 +10,7 @@
   = simple_form_for @grade, url: assignment_grade_path(@assignment), method: :patch do |f|
     = hidden_field_tag :student_id, current_student.id
 
-    #grade(ng-app="gradecraft" ng-controller="GradeCtrl" ng-init="init(#{@serialized_grade})")
+    #grade(ng-app="gradecraft" ng-init="init(#{@serialized_grade})")
 
       .panel.splash(ng-cloak) Loading grade for #{@student.name}...
 

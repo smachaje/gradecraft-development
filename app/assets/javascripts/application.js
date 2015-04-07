@@ -26,6 +26,7 @@
 //= require angular
 //= require angular-resource
 //= require angular-animate
+//= require angular-ui-router.min
 //= require ng-rails-csrf
 //= require ./angular/main.js
 //= require ./angular/ui/sortable

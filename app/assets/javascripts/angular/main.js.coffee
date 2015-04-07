@@ -1,4 +1,12 @@
-@gradecraft = angular.module('gradecraft', ['restangular', 'ui.sortable', 'ng-rails-csrf', 'ngResource', 'ngAnimate', 'froala', 'fcsa-number', 'angular-beforeunload'])
+@gradecraft = angular.module('gradecraft', ['restangular', 'ui.sortable', 'ng-rails-csrf', 'ngResource', 'ngAnimate', 'froala', 'fcsa-number', 'ui.router'])
+
+@gradecraft.config ($stateProvider, $urlRouterProvider) ->
+  $urlRouterProvider.otherwise '/'
+  $stateProvider.state('grade.standard_edit',
+    controller: 'GradeCtrl'
+  )
+  return
+
 
 @gradecraft.directive "modalDialog", ->
   restrict: "E"
