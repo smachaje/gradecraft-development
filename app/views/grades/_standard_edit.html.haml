@@ -1,4 +1,5 @@
-.small-12.columns
+%base(href="/")
+.small-12.columns(ng-app="gradecraft")
   = csrf_meta_tag
 
   - if @assignment.accepts_submissions? && @student.submission_for_assignment(@assignment).present?
@@ -7,12 +8,15 @@
       %h4.uppercase= "#{@student.first_name}'s Submission"
       = render 'submissions/instructor_data'
 
+  .panel(ui-view)
+
   = simple_form_for @grade, url: assignment_grade_path(@assignment), method: :patch do |f|
     = hidden_field_tag :student_id, current_student.id
 
-    #grade(ng-app="gradecraft" ng-init="init(#{@serialized_grade})")
+    #grade(ng-controller="GradeCtrl" ng-init="init(#{@serialized_grade})")
 
       .panel.splash(ng-cloak) Loading grade for #{@student.name}...
+
 
       .panel(ng-cloak)
         .small-12.medium-4.columns

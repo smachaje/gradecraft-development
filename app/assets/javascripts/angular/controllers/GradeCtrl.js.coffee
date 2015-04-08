@@ -1,6 +1,8 @@
 @gradecraft.controller 'GradeCtrl', ['$rootScope', '$scope', 'GradePrototype', '$window', '$http', ($rootScope, $scope, GradePrototype, $window, $http) -> 
 
+
   $scope.init = (params)->
+    $scope.header = "waffles" 
     gradeParams = params["grade"]
     $scope.grade = new GradePrototype(gradeParams)
     gradeId = gradeParams.id

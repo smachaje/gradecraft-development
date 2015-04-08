@@ -27,11 +27,13 @@
 //= require angular-resource
 //= require angular-animate
 //= require angular-ui-router.min
+//= require angular-rails-templates
 //= require ng-rails-csrf
 //= require ./angular/main.js
 //= require ./angular/ui/sortable
 //= require ./angular/vendor/restangular.min
 //= require_tree ./angular
+//= require_tree ../templates
 
 //= require bootstrap-datetimepicker
 //= require gradecraft

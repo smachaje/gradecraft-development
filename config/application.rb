@@ -15,6 +15,7 @@ module GradeCraft
     config.autoload_paths += %W(#{Rails.root}/lib)
     config.assets.precompile += %w(.svg .eot .otf .woff .ttf)
     config.assets.paths << Rails.root.join("app", "assets", "fonts")
+    config.assets.paths << Rails.root.join("app", "assets", "templates")
     config.filter_parameters += [:password]
     config.i18n.enforce_available_locales = true
     config.generators do |g|
