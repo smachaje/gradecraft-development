@@ -1,4 +1,4 @@
-@gradecraft.controller 'GradeCtrl', ['$rootScope', '$scope', 'GradePrototype', '$window', '$http', ($rootScope, $scope, GradePrototype, $window, $http) -> 
+@gradecraft.controller 'GradeCtrl', ['$rootScope', '$scope', 'GradePrototype', '$window', '$http', 'debounce', ($rootScope, $scope, GradePrototype, $window, $http, debounce) -> 
 
 
   $scope.init = (params)->
@@ -46,6 +46,17 @@
         )
         .error((err)->
         )
+
+    debouncedUpdate: ()->
+      debounce((->
+        self = this
+        $http.put("/grades/#{self.id}/async_update", self).success(
+          (data,status)->
+            self.resetChanges()
+        )
+        .error((err)->
+        )
+      ), 2000)
 
     unloadUpdate: ()->
       self = this

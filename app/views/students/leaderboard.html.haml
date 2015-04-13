@@ -1,13 +1,9 @@
-%base(href="/")
-
 .small-12.panel.mainContent#leaderboard(ng-app="gradecraft")
 
   = content_nav_for "Leaderboard"
 
   .small-12.medium-6
     %h3.pagetitle#tableCaption= @title
-  
-  .stuff(ui-view)
 
   - if current_course.has_teams?
     .small-12.large-4.medium-6.columns.right

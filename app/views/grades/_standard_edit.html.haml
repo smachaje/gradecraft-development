@@ -1,4 +1,3 @@
-%base(href="/")
 .small-12.columns(ng-app="gradecraft")
   = csrf_meta_tag
 
@@ -7,8 +6,6 @@
 
       %h4.uppercase= "#{@student.first_name}'s Submission"
       = render 'submissions/instructor_data'
-
-  .panel(ui-view)
 
   = simple_form_for @grade, url: assignment_grade_path(@assignment), method: :patch do |f|
     = hidden_field_tag :student_id, current_student.id
@@ -45,7 +42,7 @@
         .small-12.columns
           = f.hidden_field :graded_by_id, :value => current_user.id
           = f.label :feedback
-          = f.text_area :feedback, "froala" => "froalaOptions", "ng-model" => "grade.feedback", "ng-change" => "grade.change()", "ng-blur" => "grade.update()"
+          = f.text_area :feedback, "froala" => "froalaOptions", "ng-model" => "grade.feedback", "ng-change" => "grade.change()", "ng-blur" => "grade.update()", "ng-keyup" => "grade.debouncedUpdate()"
         .clear
 
       .panel(ng-cloak)

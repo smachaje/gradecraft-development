@@ -1,0 +1,21 @@
+{
+  "name": "gradecraft",
+  "version": "0.0.0",
+  "authors": [
+    "Caitlin Holman"
+  ],
+  "description": "Gameified learning",
+  "license": "MIT",
+  "homepage": "http://gradecraft.com",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "vendor/assets/components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular-debounce": "~1.0.2"
+  }
+}
