@@ -90,3 +90,7 @@ end
 group :tasks do
   gem 'rake-hooks'
 end
+
+source 'https://rails-assets.org' do
+  gem 'rails-assets-angular', '1.3.15'
+end

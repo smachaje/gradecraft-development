@@ -16,6 +16,5 @@
     "tests"
   ],
   "dependencies": {
-    "angular-debounce": "~1.0.2"
   }
 }
