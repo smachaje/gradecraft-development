@@ -29,7 +29,8 @@
               "ng-model" => "grade.raw_score",
               "ng-change" => "grade.change()",
               "placeholder" => "Enter raw score for grade",
-              "ng-blur" => "grade.update()",
+              "ng-keyup" => "grade.update()",
+              "ng-model-options" => "{ debounce: 20000 }",
               "fcsa-number" => ""
 
         - if @assignment.release_necessary?
@@ -42,7 +43,7 @@
         .small-12.columns
           = f.hidden_field :graded_by_id, :value => current_user.id
           = f.label :feedback
-          = f.text_area :feedback, "froala" => "froalaOptions", "ng-model" => "grade.feedback", "ng-change" => "grade.change()", "ng-blur" => "grade.update()", "ng-model-options" => "{ debounce: 2000 }"
+          = f.text_area :feedback, "froala" => "froalaOptions", "ng-model" => "grade.feedback", "ng-change" => "grade.change()", "ng-keyup" => "grade.update()", "ng-model-options" => "{ debounce: 2000 }"
         .clear
 
       .panel(ng-cloak)

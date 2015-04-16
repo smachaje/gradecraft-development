@@ -23,7 +23,7 @@
 //= require dynatable
 //= require lodash.min
 
-//= require angular
+//= require angular/angular
 //= require angular-resource
 //= require angular-animate
 //= require angular-ui-router.min

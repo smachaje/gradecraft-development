@@ -34,7 +34,6 @@
 
   GradePrototype.prototype = 
     change: ()->
-      this.addLocationHandler() unless this.hasChanges
       this.hasChanges = true
 
     update: ()->
