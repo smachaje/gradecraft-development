@@ -1,10 +1,11 @@
-@gradecraft.controller 'GradeCtrl', ['$rootScope', '$scope', 'GradePrototype', '$window', '$http', 'debounce', ($rootScope, $scope, GradePrototype, $window, $http, debounce) -> 
+@gradecraft.controller 'GradeCtrl', ['$rootScope', '$scope', 'GradePrototype', '$window', '$http' , ($rootScope, $scope, GradePrototype, $window, $http) -> 
 
 
   $scope.init = (params)->
     $scope.header = "waffles" 
     gradeParams = params["grade"]
     $scope.grade = new GradePrototype(gradeParams)
+    $scope.grade.addWatchers()
     gradeId = gradeParams.id
 
     $scope.froalaOptions = {
@@ -29,22 +30,27 @@
     this.raw_score = grade["raw_score"]
     this.feedback = grade["feedback"]
 
-    # manage object state
-    this.hasChanges = false
-
-  GradePrototype.prototype = 
-    change: ()->
-      this.hasChanges = true
+  GradePrototype.prototype = {
+    snakes: ()->
+      alert("snakes")
 
     update: ()->
-      if this.hasChanges
-        self = this
-        $http.put("/grades/#{self.id}/async_update", self).success(
-          (data,status)->
-            self.resetChanges()
-        )
-        .error((err)->
-        )
+      self = this
+      $http.put("/grades/#{self.id}/async_update", self).success(
+        (data,status)->
+          self.resetChanges()
+      )
+      .error((err)->
+      )
+
+    addWatchers: ()->
+      $scope.$watch('grade.feedback', (()->
+        $scope.grade.update()
+        ), true)
+
+      $scope.$watch('grade.raw_score', (()->
+        $scope.grade.update()
+        ), true)
 
     debouncedUpdate: ()->
       debounce((->
@@ -75,5 +81,6 @@
       }
     resetChanges: ()->
       this.hasChanges = false
+  }
 
 ]

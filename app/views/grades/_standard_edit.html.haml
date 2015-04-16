@@ -27,10 +27,8 @@
               hint: "Total Assignment Points: #{ points @assignment.point_total }",
               data: {autonumeric: true, "m-dec" => "0"},
               "ng-model" => "grade.raw_score",
-              "ng-change" => "grade.change()",
               "placeholder" => "Enter raw score for grade",
-              "ng-keyup" => "grade.update()",
-              "ng-model-options" => "{ debounce: 20000 }",
+              "ng-change" => "grade.snakes()",
               "fcsa-number" => ""
 
         - if @assignment.release_necessary?
@@ -43,7 +41,10 @@
         .small-12.columns
           = f.hidden_field :graded_by_id, :value => current_user.id
           = f.label :feedback
-          = f.text_area :feedback, "froala" => "froalaOptions", "ng-model" => "grade.feedback", "ng-change" => "grade.change()", "ng-keyup" => "grade.update()", "ng-model-options" => "{ debounce: 2000 }"
+          = f.text_area :feedback,
+            "froala" => "froalaOptions",
+            "ng-model" => "grade.feedback",
+            "ng-model-options" => "{ debounce: 1000 }"
         .clear
 
       .panel(ng-cloak)
