@@ -27,6 +27,7 @@
               hint: "Total Assignment Points: #{ points @assignment.point_total }",
               data: {autonumeric: true, "m-dec" => "0"},
               "ng-model" => "grade.raw_score",
+              "ng-change" => "grade.change()",
               "placeholder" => "Enter raw score for grade",
               "fcsa-number" => "",
               "debounce-update" => "grade.customUpdate(raw_score)"
@@ -43,6 +44,7 @@
           = f.label :feedback
           = f.text_area :feedback,
             "froala" => "froalaOptions",
+            "ng-change" => "grade.change()",
             "ng-model" => "grade.feedback",
             "ng-model-options" => "{ debounce: 1000 }"
         .clear

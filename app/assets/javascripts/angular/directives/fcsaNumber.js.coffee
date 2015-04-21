@@ -107,7 +107,8 @@ fcsaNumberModule.directive 'fcsaNumber',
                 # alert(elem.val().replace(/,/g, ''))
                 # alert(scope.grade.raw_score)
                 # if elem.val().replace(/,/g,'') != scope.grade.raw_score
-                scope.grade.customUpdate(elem.val())
+                if scope.grade.raw_score != elem.val()
+                  scope.grade.customUpdate(elem.val())
                 scope.rawScoreUpdating = false
 
               beginUpdate = ()->

@@ -7,8 +7,8 @@
     $scope.grade = new GradePrototype(gradeParams)
     $scope.grade.addWatchers()
     gradeId = gradeParams.id
-    $scope.snakes = "whaaatttt"
     $scope.rawScoreUpdating = false
+    $scope.hasChanges = false
 
     $scope.froalaOptions = {
       inlineMode: false,
@@ -33,6 +33,10 @@
     this.feedback = grade["feedback"]
 
   GradePrototype.prototype = {
+    change: ()->
+      if $scope.hasChanges == false
+        $scope.hasChanges = true
+
     update: ()->
       self = this
       $http.put("/grades/#{self.id}/async_update", self).success(
