@@ -30,7 +30,7 @@
               "ng-change" => "grade.change()",
               "placeholder" => "Enter raw score for grade",
               "fcsa-number" => "",
-              "debounce-update" => "grade.customUpdate(raw_score)"
+              "fcsa-options" => "{ maxDigits: 9, preventInvalidInput: true }"
 
         - if @assignment.release_necessary?
           .small-12.large-4.columns

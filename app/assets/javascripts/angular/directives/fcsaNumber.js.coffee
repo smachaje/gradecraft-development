@@ -5,10 +5,11 @@ fcsaNumberModule.directive 'fcsaNumber',
 
     defaultOptions = fcsaNumberConfig.defaultOptions
 
-    getOptions = (scope) ->
+    getOptions = (scope, attrs) ->
         options = angular.copy defaultOptions
-        if scope.options?
-            for own option, value of scope.$eval(scope.options)
+        if attrs.fcsaOptions?
+            # alert("fcsa-options!!")
+            for own option, value of scope.$eval(attrs.fcsaOptions)
                 options[option] = value
         options
     
@@ -18,6 +19,9 @@ fcsaNumberModule.directive 'fcsaNumber',
     # 44 is ',', 45 is '-', 57 is '9' and 47 is '/'
     isNotDigit = (which) ->
         (which < 44 || which > 57 || which is 47)
+
+    isTooLong = (valLength, maxDigits) ->
+      valLength >= maxDigits
 
     controlKeys = [0,8,13] # 0 = tab, 8 = backspace , 13 = enter
     isNotControlKey = (which) ->
@@ -77,7 +81,7 @@ fcsaNumberModule.directive 'fcsaNumber',
         scope:
           true
         link: (scope, elem, attrs, ngModelCtrl) ->
-            options = getOptions scope
+            options = getOptions scope, attrs
             isValid = makeIsValid options
 
             ngModelCtrl.$parsers.unshift (viewVal) ->
@@ -103,10 +107,6 @@ fcsaNumberModule.directive 'fcsaNumber',
 
             elem.on 'keyup', ->
               triggerUpdate = ()->
-                # $parse attrs.debounceUpdate
-                # alert(elem.val().replace(/,/g, ''))
-                # alert(scope.grade.raw_score)
-                # if elem.val().replace(/,/g,'') != scope.grade.raw_score
                 if scope.grade.raw_score != elem.val()
                   scope.grade.customUpdate(elem.val())
                 scope.rawScoreUpdating = false
@@ -137,7 +137,8 @@ fcsaNumberModule.directive 'fcsaNumber',
 
             if options.preventInvalidInput == true
               elem.on 'keypress', (e) ->
-                e.preventDefault() if isNotDigit(e.which) && isNotControlKey(e.which)
+                e.preventDefault() if Number(elem.val().length) > 9
+                e.preventDefault() if (isNotDigit(e.which) && isNotControlKey(e.which))
     }
 ]
 
