@@ -28,8 +28,8 @@
               data: {autonumeric: true, "m-dec" => "0"},
               "ng-model" => "grade.raw_score",
               "placeholder" => "Enter raw score for grade",
-              "ng-change" => "grade.snakes()",
-              "fcsa-number" => ""
+              "fcsa-number" => "",
+              "debounce-update" => "grade.customUpdate(raw_score)"
 
         - if @assignment.release_necessary?
           .small-12.large-4.columns

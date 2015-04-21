@@ -89,7 +89,15 @@ class GradesController < ApplicationController
     if params[:save_type] == "feedback"
       base_async_params
     else
-      base_async_params.merge(raw_score: params[:raw_score].gsub(/\D/, ''))
+      base_async_params.merge(raw_score: sanitized_raw_score)
+    end
+  end
+
+  def sanitized_raw_score
+    if params[:raw_score].class == String
+      params[:raw_score].gsub(/\D/, '')
+    else
+      params[:raw_score]
     end
   end
 

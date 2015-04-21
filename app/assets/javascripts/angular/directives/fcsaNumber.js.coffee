@@ -75,7 +75,7 @@ fcsaNumberModule.directive 'fcsaNumber',
         restrict: 'A'
         require: 'ngModel'
         scope:
-            options: '@fcsaNumber'
+          true
         link: (scope, elem, attrs, ngModelCtrl) ->
             options = getOptions scope
             isValid = makeIsValid options
@@ -101,6 +101,22 @@ fcsaNumberModule.directive 'fcsaNumber',
                   val = "#{val}#{options.append}"
                 val
 
+            elem.on 'keyup', ->
+              triggerUpdate = ()->
+                # $parse attrs.debounceUpdate
+                # alert(elem.val().replace(/,/g, ''))
+                # alert(scope.grade.raw_score)
+                # if elem.val().replace(/,/g,'') != scope.grade.raw_score
+                scope.grade.customUpdate(elem.val())
+                scope.rawScoreUpdating = false
+
+              beginUpdate = ()->
+                scope.rawScoreUpdating = true
+                setTimeout(triggerUpdate, 1400)
+
+              if scope.rawScoreUpdating == false
+                beginUpdate()
+
             elem.on 'blur', ->
                 viewValue = ngModelCtrl.$modelValue
                 return if !viewValue? || !isValid(viewValue)
@@ -115,7 +131,7 @@ fcsaNumberModule.directive 'fcsaNumber',
                   val = val.replace options.prepend, ''
                 if options.append?
                   val = val.replace options.append, ''
-                elem.val val.replace /,/g, '' # ATTN: LINE THAT ADDS ON-CLICK COMMA REMOVAL
+                # elem.val val.replace /,/g, '' # ATTN: LINE THAT ADDS ON-CLICK COMMA REMOVAL
                 elem[0].select()
 
             if options.preventInvalidInput == true

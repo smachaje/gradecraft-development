@@ -7,6 +7,8 @@
     $scope.grade = new GradePrototype(gradeParams)
     $scope.grade.addWatchers()
     gradeId = gradeParams.id
+    $scope.snakes = "whaaatttt"
+    $scope.rawScoreUpdating = false
 
     $scope.froalaOptions = {
       inlineMode: false,
@@ -31,9 +33,6 @@
     this.feedback = grade["feedback"]
 
   GradePrototype.prototype = {
-    snakes: ()->
-      alert("snakes")
-
     update: ()->
       self = this
       $http.put("/grades/#{self.id}/async_update", self).success(
@@ -43,12 +42,17 @@
       .error((err)->
       )
 
+    customUpdate: (fcsaValue)->
+      self = this
+      $http.put("/grades/#{self.id}/async_update", {raw_score: fcsaValue} ).success(
+        (data,status)->
+          self.resetChanges()
+      )
+      .error((err)->
+      )
+
     addWatchers: ()->
       $scope.$watch('grade.feedback', (()->
-        $scope.grade.update()
-        ), true)
-
-      $scope.$watch('grade.raw_score', (()->
         $scope.grade.update()
         ), true)
 
