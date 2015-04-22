@@ -5,11 +5,10 @@ fcsaNumberModule.directive 'fcsaNumber',
 
     defaultOptions = fcsaNumberConfig.defaultOptions
 
-    getOptions = (scope, attrs) ->
+    getOptions = (scope) ->
         options = angular.copy defaultOptions
-        if attrs.fcsaOptions?
-            # alert("fcsa-options!!")
-            for own option, value of scope.$eval(attrs.fcsaOptions)
+        if scope.options?
+            for own option, value of scope.$eval(scope.options)
                 options[option] = value
         options
     
@@ -19,9 +18,6 @@ fcsaNumberModule.directive 'fcsaNumber',
     # 44 is ',', 45 is '-', 57 is '9' and 47 is '/'
     isNotDigit = (which) ->
         (which < 44 || which > 57 || which is 47)
-
-    isTooLong = (valLength, maxDigits) ->
-      valLength >= maxDigits
 
     controlKeys = [0,8,13] # 0 = tab, 8 = backspace , 13 = enter
     isNotControlKey = (which) ->
@@ -79,9 +75,9 @@ fcsaNumberModule.directive 'fcsaNumber',
         restrict: 'A'
         require: 'ngModel'
         scope:
-          true
+            options: '@fcsaNumber'
         link: (scope, elem, attrs, ngModelCtrl) ->
-            options = getOptions scope, attrs
+            options = getOptions scope
             isValid = makeIsValid options
 
             ngModelCtrl.$parsers.unshift (viewVal) ->
@@ -105,19 +101,6 @@ fcsaNumberModule.directive 'fcsaNumber',
                   val = "#{val}#{options.append}"
                 val
 
-            elem.on 'keyup', ->
-              triggerUpdate = ()->
-                if scope.grade.raw_score != elem.val()
-                  scope.grade.customUpdate(elem.val())
-                scope.rawScoreUpdating = false
-
-              beginUpdate = ()->
-                scope.rawScoreUpdating = true
-                setTimeout(triggerUpdate, 1400)
-
-              if scope.rawScoreUpdating == false
-                beginUpdate()
-
             elem.on 'blur', ->
                 viewValue = ngModelCtrl.$modelValue
                 return if !viewValue? || !isValid(viewValue)
@@ -132,13 +115,12 @@ fcsaNumberModule.directive 'fcsaNumber',
                   val = val.replace options.prepend, ''
                 if options.append?
                   val = val.replace options.append, ''
-                # elem.val val.replace /,/g, '' # ATTN: LINE THAT ADDS ON-CLICK COMMA REMOVAL
+                elem.val val.replace /,/g, ''
                 elem[0].select()
 
             if options.preventInvalidInput == true
               elem.on 'keypress', (e) ->
-                e.preventDefault() if Number(elem.val().length) > 9
-                e.preventDefault() if (isNotDigit(e.which) && isNotControlKey(e.which))
+                e.preventDefault() if isNotDigit(e.which) && isNotControlKey(e.which)
     }
 ]
 

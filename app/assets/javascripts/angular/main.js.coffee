@@ -1,23 +1,4 @@
-@gradecraft = angular.module('gradecraft', ['restangular', 'ui.sortable', 'ng-rails-csrf', 'ngResource', 'ngAnimate', 'ui.router', 'froala', 'fcsa-number', 'templates', 'debounce'])
-
-@gradecraft.config ($stateProvider, $urlRouterProvider, $locationProvider) ->
-
-  # $stateProvider
-  #   .state('leaderboard', {
-  #     controller: 'LeaderboardCtrl',
-  #     url: "/leaderboard",
-  #     templateUrl: "leaderboard.html"
-  #   })
-  #   .state('grade', {
-  #     controller: 'GradeEditCtrl',
-  #     url: '/assignments/:assignmentId/grade/edit?student_id',
-  #     templateUrl: "grade_edit.html"
-  #   })
-
-  # $urlRouterProvider.otherwise("/")
-  # # use the HTML5 History API
-  # $locationProvider.html5Mode(true)
-
+@gradecraft = angular.module('gradecraft', ['restangular', 'ui.sortable', 'ng-rails-csrf', 'ngResource', 'ngAnimate', 'froala', 'fcsa-number', 'miko-number'])
 
 @gradecraft.directive "modalDialog", ->
   restrict: "E"

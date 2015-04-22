@@ -25,12 +25,13 @@
               default: @assignment.point_total,
               label: "Score",
               hint: "Total Assignment Points: #{ points @assignment.point_total }",
-              data: {autonumeric: true, "m-dec" => "0"},
               "ng-model" => "grade.raw_score",
               "ng-change" => "grade.change()",
               "placeholder" => "Enter raw score for grade",
-              "fcsa-number" => "",
-              "fcsa-options" => "{ maxDigits: 9, preventInvalidInput: true }"
+              "miko-number" => "",
+              "miko-number-options" => "{ maxDigits: 9, preventInvalidInput: true }"
+
+            -#data: {autonumeric: true, "m-dec" => "0", "v-max" => "999999999"},
 
         - if @assignment.release_necessary?
           .small-12.large-4.columns
