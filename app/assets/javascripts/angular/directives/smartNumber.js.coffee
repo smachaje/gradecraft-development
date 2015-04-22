@@ -1,15 +1,15 @@
-mikoNumberModule = angular.module('miko-number', [])
+NumberModule = angular.module('smart-number', [])
 
-mikoNumberModule.directive 'mikoNumber',
-['mikoNumberConfig', (mikoNumberConfig) ->
+NumberModule.directive 'smartNumber',
+['NumberConfig', (smartNumberConfig) ->
 
-    defaultOptions = mikoNumberConfig.defaultOptions
+    defaultOptions = NumberConfig.defaultOptions
     controlKeys = [0,8,13] # 0 = tab, 8 = backspace , 13 = enter
 
     getOptions = (scope, attrs) ->
         options = angular.copy defaultOptions
-        if attrs.mikoNumberOptions?
-            for own option, value of scope.$eval(attrs.mikoNumberOptions)
+        if attrs.NumberOptions?
+            for own option, value of scope.$eval(attrs.NumberOptions)
                 options[option] = value
         options
     
@@ -35,7 +35,7 @@ mikoNumberModule.directive 'mikoNumber',
     isControlKey = (which) ->
       controlKeys.indexOf(which) >= 0
 
-    invalidAction = (elem, event, options) ->
+    invalidInput = (elem, event, options) ->
       invalidKey(event) or invalidZero(elem, event) or maxDigitsReached(elem, options)
 
     # invalid actions
@@ -104,28 +104,15 @@ mikoNumberModule.directive 'mikoNumber',
       stripped = val.replace(/,/g, "")
       numberWithCommas(stripped)
 
-    getCursorPosition = (element) ->
-      if 'selectionStart' in element
-        return element.selectionStart
-      else if document.selection
-        element.focus()
-        sel = document.selection.createRange()
-        selLen = document.selection.createRange().text.length
-        sel.moveStart 'character', -element.value.length
-        return sel.text.length - selLen
-      return
+    # update handling
+    triggerUpdate = (scope, elem) ->
+      if scope.grade.raw_score != elem.val()
+        scope.grade.customUpdate(elem.val())
+      scope.rawScoreUpdating = false
 
-    setCursorPosition = (element, caretPos) ->
-      if element.createTextRange
-        range = element.createTextRange()
-        range.move 'character', caretPos
-        range.select()
-      else
-        element.focus()
-        if element.selectionStart != undefined
-          element.setSelectionRange caretPos, caretPos
-      return
-
+    beginUpdate = (scope, elem)->
+      scope.rawScoreUpdating = true
+      setTimeout(triggerUpdate(scope, elem), 1400)
 
     {
         restrict: 'A'
@@ -139,17 +126,17 @@ mikoNumberModule.directive 'mikoNumber',
             ngModelCtrl.$parsers.unshift (viewVal) ->
                 noCommasVal = viewVal.replace /,/g, ''
                 if isValid(noCommasVal) || !noCommasVal
-                    ngModelCtrl.$setValidity 'mikoNumber', true
+                    ngModelCtrl.$setValidity 'Number', true
                     return noCommasVal
                 else
-                    ngModelCtrl.$setValidity 'mikoNumber', false
+                    ngModelCtrl.$setValidity 'Number', false
                     return undefined
 
             ngModelCtrl.$formatters.push (val) ->
                 if options.nullDisplay? && (!val || val == '')
                     return options.nullDisplay
                 return val if !val? || !isValid val
-                ngModelCtrl.$setValidity 'mikoNumber', true
+                ngModelCtrl.$setValidity 'Number', true
                 val = addCommasToInteger val.toString()
                 if options.prepend?
                   val = "#{options.prepend}#{val}"
@@ -158,7 +145,7 @@ mikoNumberModule.directive 'mikoNumber',
                 val
 
             elem.on 'keyup', (event) ->
-              return if isMovementKey(event)
+              return if invalidInput(elem, event, options)
 
               if event.which == 8 # backspace is pressed
                 if elem.val().length == 4 || elem.val().length == 8 # a new comma is added
@@ -180,21 +167,11 @@ mikoNumberModule.directive 'mikoNumber',
               elem.val resetCommas(elem.val()) # reformat the number in place
               elem[0].setSelectionRange(newCursorPosition, newCursorPosition) # set the new cursor position
 
-              triggerUpdate = ()->
-                if scope.grade.raw_score != elem.val()
-                  scope.grade.customUpdate(elem.val())
-                scope.rawScoreUpdating = false
-
-              beginUpdate = ()->
-                scope.rawScoreUpdating = true
-                setTimeout(triggerUpdate, 1400)
-
               # not updating unless value is longer than 4 digits including commas
               # still some issues moving the comma after input/delete
               # need to add support for delete/backspace if comma is present
-              # need to exclude entry of zeroes in 
               if scope.rawScoreUpdating == false
-                beginUpdate() unless elem.val().length >= options.maxDigits
+                beginUpdate(scope, elem)
 
             elem.on 'blur', ->
                 viewValue = ngModelCtrl.$modelValue
@@ -215,14 +192,14 @@ mikoNumberModule.directive 'mikoNumber',
 
             if options.preventInvalidInput == true
               elem.on 'keypress', (e) ->
-                if invalidAction(elem, event, options)
+                if invalidInput(elem, event, options)
                   e.preventDefault()
                   e.stopPropagation()
 
     }
 ]
 
-mikoNumberModule.provider 'mikoNumberConfig', ->
+NumberModule.provider 'smartNumberConfig', ->
   _defaultOptions = {}
 
   @setDefaultOptions = (defaultOptions) ->
