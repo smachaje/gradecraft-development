@@ -35,11 +35,19 @@ mikoNumberModule.directive 'mikoNumber',
     isControlKey = (which) ->
       controlKeys.indexOf(which) >= 0
 
-    lostAComma = (initialCommaCount, elem) ->
-      elem.val().replace(/\d/g,"").length < initialCommaCount
+    invalidAction = (elem, event, options) ->
+      invalidKey(event) or invalidZero(elem, event) or maxDigitsReached(elem, options)
 
-    gainedAComma = (initialCommaCount, elem) ->
-      elem.val().replace(/\d/g,"").length > initialCommaCount
+    # invalid actions
+    invalidKey = (event) ->
+      isNotDigit(event.which) && isNotControlKey(event.which)
+
+    invalidZero = (elem, event) ->
+      # entering 0 in the first place
+      elem[0].selectionStart == 0 and event.which == 48 
+
+    maxDigitsReached = (elem, options) ->
+      elem.val().length >= options.maxDigits
 
     hasMultipleDecimals = (val) ->
       val? && val.toString().split('.').length > 2
@@ -150,17 +158,27 @@ mikoNumberModule.directive 'mikoNumber',
                 val
 
             elem.on 'keyup', (event) ->
-              if !isMovementKey(event)
-                if event.which == 8
+              return if isMovementKey(event)
+
+              if event.which == 8 # backspace is pressed
+                if elem.val().length == 4 || elem.val().length == 8 # a new comma is added
+                  newCursorPosition = elem[0].selectionStart - 1
+                else
+                  newCursorPosition = elem[0].selectionStart
+              else
+                if elem.val().length >= options.maxDigits # maxDigits has been reached
                   newCursorPosition = elem[0].selectionStart
                 else
-                  if elem.val().length >= options.maxDigits
-                    newCursorPosition = elem[0].selectionStart
-                  else
+                  if elem.val().length == 4 || elem.val().length == 8 # a new comma is added
                     newCursorPosition = elem[0].selectionStart + 1
+                  else
+                    if elem[0].selectionStart < elem.val().length # cursor is adding numbers, but is not at the end of the input
+                      newCursorPosition = elem[0].selectionStart # otherwise
+                    else
+                      newCursorPosition = elem[0].selectionStart + 1 # otherwise
 
-                elem.val resetCommas(elem.val())
-                elem[0].setSelectionRange(newCursorPosition, newCursorPosition)
+              elem.val resetCommas(elem.val()) # reformat the number in place
+              elem[0].setSelectionRange(newCursorPosition, newCursorPosition) # set the new cursor position
 
               triggerUpdate = ()->
                 if scope.grade.raw_score != elem.val()
@@ -173,6 +191,8 @@ mikoNumberModule.directive 'mikoNumber',
 
               # not updating unless value is longer than 4 digits including commas
               # still some issues moving the comma after input/delete
+              # need to add support for delete/backspace if comma is present
+              # need to exclude entry of zeroes in 
               if scope.rawScoreUpdating == false
                 beginUpdate() unless elem.val().length >= options.maxDigits
 
@@ -194,12 +214,8 @@ mikoNumberModule.directive 'mikoNumber',
                 elem[0].select()
 
             if options.preventInvalidInput == true
-              
               elem.on 'keypress', (e) ->
-                if elem.val().length >= options.maxDigits
-                  e.preventDefault()
-                  e.stopPropagation()
-                if (isNotDigit(e.which) && isNotControlKey(e.which))
+                if invalidAction(elem, event, options)
                   e.preventDefault()
                   e.stopPropagation()
 
