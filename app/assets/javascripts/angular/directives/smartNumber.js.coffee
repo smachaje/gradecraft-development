@@ -1,15 +1,15 @@
 NumberModule = angular.module('smart-number', [])
 
 NumberModule.directive 'smartNumber',
-['NumberConfig', (smartNumberConfig) ->
+['smartNumberConfig', (smartNumberConfig) ->
 
-    defaultOptions = NumberConfig.defaultOptions
+    defaultOptions = smartNumberConfig.defaultOptions
     controlKeys = [0,8,13] # 0 = tab, 8 = backspace , 13 = enter
 
     getOptions = (scope, attrs) ->
         options = angular.copy defaultOptions
-        if attrs.NumberOptions?
-            for own option, value of scope.$eval(attrs.NumberOptions)
+        if attrs.smartNumberOptions?
+            for own option, value of scope.$eval(attrs.smartNumberOptions)
                 options[option] = value
         options
     
@@ -70,6 +70,22 @@ NumberModule.directive 'smartNumber',
     makeMaxDigits = (maxDigits) ->
         validRegex = new RegExp "^-?\\d{0,#{maxDigits}}(\\.\\d*)?$"
         (val) -> validRegex.test val
+
+    backspaceAtComma = (elem, event) ->
+      cursorPos = elem[0].selectionStart
+      elem.val().charAt(elem[0].selectionStart - 1) == "," and event.which == 8
+    
+    deleteAtComma = (elem, event) ->
+      cursorPos = elem[0].selectionStart
+      elem.val().charAt(cursorPos) == "," and event.which == 46
+
+    moveCursorLeft = (elem) ->
+      newCursorPos = elem[0].selectionStart - 1
+      elem[0].setSelectionRange(newCursorPos, newCursorPos)
+
+    moveCursorRight = (elem) ->
+      newCursorPos = elem[0].selectionStart + 1
+      elem[0].setSelectionRange(newCursorPos, newCursorPos)
 
     makeIsValid = (options) ->
         validations = []
@@ -153,16 +169,12 @@ NumberModule.directive 'smartNumber',
                 else
                   newCursorPosition = elem[0].selectionStart
               else
-                if elem.val().length >= options.maxDigits # maxDigits has been reached
+                if elem.val().length == 4 || elem.val().length == 8 # a new comma is added
+                  newCursorPosition = elem[0].selectionStart + 1
+                else if elem[0].selectionStart < elem.val().length # cursor is adding numbers, but is not at the end of the input field
                   newCursorPosition = elem[0].selectionStart
-                else
-                  if elem.val().length == 4 || elem.val().length == 8 # a new comma is added
-                    newCursorPosition = elem[0].selectionStart + 1
-                  else
-                    if elem[0].selectionStart < elem.val().length # cursor is adding numbers, but is not at the end of the input
-                      newCursorPosition = elem[0].selectionStart # otherwise
-                    else
-                      newCursorPosition = elem[0].selectionStart + 1 # otherwise
+                else # cursor is adding numbers at the end of the input field
+                  newCursorPosition = elem[0].selectionStart + 1
 
               elem.val resetCommas(elem.val()) # reformat the number in place
               elem[0].setSelectionRange(newCursorPosition, newCursorPosition) # set the new cursor position
@@ -170,6 +182,7 @@ NumberModule.directive 'smartNumber',
               # not updating unless value is longer than 4 digits including commas
               # still some issues moving the comma after input/delete
               # need to add support for delete/backspace if comma is present
+              # issue where formatting is not occurring when entered too quickly
               if scope.rawScoreUpdating == false
                 beginUpdate(scope, elem)
 
@@ -189,6 +202,10 @@ NumberModule.directive 'smartNumber',
                   val = val.replace options.append, ''
                 # elem.val val.replace /,/g, '' # ATTN: LINE THAT ADDS ON-CLICK COMMA REMOVAL
                 elem[0].select()
+
+            elem.on 'keydown', (e) ->
+              moveCursorLeft(elem) if backspaceAtComma(elem, event)
+              moveCursorRight(elem) if deleteAtComma(elem, event)
 
             if options.preventInvalidInput == true
               elem.on 'keypress', (e) ->
