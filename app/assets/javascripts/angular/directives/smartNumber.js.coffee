@@ -5,6 +5,7 @@ NumberModule.directive 'smartNumber',
 
     defaultOptions = smartNumberConfig.defaultOptions
     controlKeys = [0,8,13] # 0 = tab, 8 = backspace , 13 = enter
+    keyCodes = { 48:0, 49:1, 50:2, 51:3, 52:4, 53:5, 54:6, 55:7, 56:8, 57:9 }
 
     getOptions = (scope, attrs) ->
         options = angular.copy defaultOptions
@@ -87,6 +88,13 @@ NumberModule.directive 'smartNumber',
       newCursorPos = elem[0].selectionStart + 1
       elem[0].setSelectionRange(newCursorPos, newCursorPos)
 
+    insertCharacter = (elem, event) ->
+      character = keyCodes[event.which]
+      originalValue = elem.val()
+      position = elem[0].selectionStart
+      
+      [originalValue.slice(0, position), b, originalValue.slice(position)].join('')
+
     makeIsValid = (options) ->
         validations = []
         
@@ -138,6 +146,7 @@ NumberModule.directive 'smartNumber',
         link: (scope, elem, attrs, ngModelCtrl) ->
             options = getOptions scope, attrs
             isValid = makeIsValid options
+            reformatRequired = false
 
             ngModelCtrl.$parsers.unshift (viewVal) ->
                 noCommasVal = viewVal.replace /,/g, ''
@@ -161,23 +170,8 @@ NumberModule.directive 'smartNumber',
                 val
 
             elem.on 'keyup', (event) ->
+
               return if invalidInput(elem, event, options)
-
-              if event.which == 8 # backspace is pressed
-                if elem.val().length == 4 || elem.val().length == 8 # a new comma is added
-                  newCursorPosition = elem[0].selectionStart - 1
-                else
-                  newCursorPosition = elem[0].selectionStart
-              else
-                if elem.val().length == 4 || elem.val().length == 8 # a new comma is added
-                  newCursorPosition = elem[0].selectionStart + 1
-                else if elem[0].selectionStart < elem.val().length # cursor is adding numbers, but is not at the end of the input field
-                  newCursorPosition = elem[0].selectionStart
-                else # cursor is adding numbers at the end of the input field
-                  newCursorPosition = elem[0].selectionStart + 1
-
-              elem.val resetCommas(elem.val()) # reformat the number in place
-              elem[0].setSelectionRange(newCursorPosition, newCursorPosition) # set the new cursor position
 
               # not updating unless value is longer than 4 digits including commas
               # still some issues moving the comma after input/delete
@@ -209,9 +203,30 @@ NumberModule.directive 'smartNumber',
 
             if options.preventInvalidInput == true
               elem.on 'keypress', (e) ->
-                if invalidInput(elem, event, options)
-                  e.preventDefault()
-                  e.stopPropagation()
+                e.preventDefault()
+                e.stopPropagation()
+
+                return if invalidInput(elem, event, options)
+
+                if event.which >= 48 and event.which <= 57 # insert number character
+                  insertCharacter(elem, event)
+
+                # if a key has been pressed and a reformat is required, do it
+                if event.which == 8 # backspace is pressed
+                  if elem.val().length == 4 || elem.val().length == 8 # a new comma is added
+                    newCursorPosition = elem[0].selectionStart - 1
+                  else
+                    newCursorPosition = elem[0].selectionStart
+                else
+                  if elem.val().length == 4 || elem.val().length == 8 # a new comma is added
+                    newCursorPosition = elem[0].selectionStart + 1
+                  else if elem[0].selectionStart < elem.val().length # cursor is adding numbers, but is not at the end of the input field
+                    newCursorPosition = elem[0].selectionStart
+                  else # cursor is adding numbers at the end of the input field
+                    newCursorPosition = elem[0].selectionStart + 1
+
+                elem.val resetCommas(elem.val()) # reformat the number in place
+                elem[0].setSelectionRange(newCursorPosition, newCursorPosition) # set the new cursor position
 
     }
 ]
