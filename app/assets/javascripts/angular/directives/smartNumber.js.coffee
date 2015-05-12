@@ -88,12 +88,21 @@ NumberModule.directive 'smartNumber',
       newCursorPos = elem[0].selectionStart + 1
       elem[0].setSelectionRange(newCursorPos, newCursorPos)
 
+    # logic for handling insertion of number characters
     insertCharacter = (elem, event) ->
-      character = keyCodes[event.which]
-      originalValue = elem.val()
-      position = elem[0].selectionStart
-      
-      [originalValue.slice(0, position), b, originalValue.slice(position)].join('')
+      character = keyCodes[event.which] # which character was entered
+      originalValue = elem.val() # the original value of the field before keypress
+      position = elem[0].selectionStart # cursor position
+      newValue = [originalValue.slice(0, position), character, originalValue.slice(position)].join('') # insert the new number into the field
+      elem.val(newValue) # replace the original value with the new one
+
+    # handle backspace keypresses
+    backspacePressed = (elem, event) ->
+      originalValue = elem.val() # the original value of the field before keypress
+      position = elem[0].selectionStart # cursor position
+      characterBeforeCursor = originalValue.slice(position - 1, position)
+      alert(characterBeforeCursor)
+
 
     makeIsValid = (options) ->
         validations = []
@@ -197,14 +206,10 @@ NumberModule.directive 'smartNumber',
                 # elem.val val.replace /,/g, '' # ATTN: LINE THAT ADDS ON-CLICK COMMA REMOVAL
                 elem[0].select()
 
-            elem.on 'keydown', (e) ->
-              moveCursorLeft(elem) if backspaceAtComma(elem, event)
-              moveCursorRight(elem) if deleteAtComma(elem, event)
-
             if options.preventInvalidInput == true
-              elem.on 'keypress', (e) ->
-                e.preventDefault()
-                e.stopPropagation()
+              elem.on 'keypress', (event) ->
+                event.preventDefault()
+                event.stopPropagation()
 
                 return if invalidInput(elem, event, options)
 
@@ -213,10 +218,7 @@ NumberModule.directive 'smartNumber',
 
                 # if a key has been pressed and a reformat is required, do it
                 if event.which == 8 # backspace is pressed
-                  if elem.val().length == 4 || elem.val().length == 8 # a new comma is added
-                    newCursorPosition = elem[0].selectionStart - 1
-                  else
-                    newCursorPosition = elem[0].selectionStart
+                  backspacePressed(elem, event) # handle logic for backspace
                 else
                   if elem.val().length == 4 || elem.val().length == 8 # a new comma is added
                     newCursorPosition = elem[0].selectionStart + 1
